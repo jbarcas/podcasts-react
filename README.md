@@ -4,14 +4,14 @@ En este repositorio se aloja el código de una mini-aplicación para escuchar po
 
 ## Primeros pasos
 
-Para construir y ejecutar la aplicación deberemos clonar el repositorio `podcasts` e instalar sus dependencias. Para clonar el repositorio es necesario tener instalado Git, puedes obtenerlo en http://git-scm.com/. Para instalar las dependencias es necesario tener instalado un gestori de dependencias como [npm][npm] o [yarn][yarn].
+Para construir y ejecutar la aplicación deberemos clonar el repositorio `podcasts-react` e instalar sus dependencias. Para clonar el repositorio es necesario tener instalado Git, puedes obtenerlo en http://git-scm.com/. Para instalar las dependencias es necesario tener instalado un gestori de dependencias como [npm][npm] o [yarn][yarn].
 
 ### Clonar el repositorio
 
 Para clonar el repositorio se debe ejecutar la siguiente instrucción:
 
 ```
-git clone https://github.com/jbarcas/podcasts.git
+git clone https://github.com/jbarcas/podcasts-react.git
 ```
 
 ### Instalar las dependencias
@@ -19,7 +19,7 @@ git clone https://github.com/jbarcas/podcasts.git
 Para instalar las dependencias primero nos situaremos en la raíz del proyecto (donde se encuentra el `package.json`):
 
 ```
-cd podcasts
+cd podcasts-react
 ```
 Llegados a este punto lo único que faltaría sería instalar las dependencias, para ello:
 

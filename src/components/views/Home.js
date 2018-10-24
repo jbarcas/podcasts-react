@@ -1,19 +1,34 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import api from "../../api";
 
 class Home extends React.Component {
+  state = {
+    podcasts: []
+  };
 
   componentDidMount = () => {
-    // TODO: eliminar el setInterval, sólo es para probar que el spinner se desactiva
-    let that = this;
-    setInterval(() => that.props.isLoading(false), 3000);
+    api.podcasts.getAll().then(podcasts => {
+      this.setState({ podcasts: podcasts });
+      this.props.isLoading(false);
+    });
   };
 
   render() {
     return (
       <div>
         <h1>Listado de podcasts</h1>
-        <Link to="/podcast/1">Podcast 1</Link>
+        <ul>
+          {this.state.podcasts.map(podcast => {
+            return (
+              <li key={podcast.id.attributes["im:id"]}>
+                <Link to={`/podcast/${podcast.id.attributes["im:id"]}`}>
+                  {podcast.title.label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     );
   }
