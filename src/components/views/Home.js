@@ -1,6 +1,7 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Grid } from "semantic-ui-react";
 import api from "../../api";
+import Podcast from "../podcasts/Podcast";
 
 class Home extends React.Component {
   state = {
@@ -16,20 +17,15 @@ class Home extends React.Component {
 
   render() {
     return (
-      <div>
-        <h1>Listado de podcasts</h1>
-        <ul>
-          {this.state.podcasts.map(podcast => {
-            return (
-              <li key={podcast.id.attributes["im:id"]}>
-                <Link to={`/podcast/${podcast.id.attributes["im:id"]}`}>
-                  {podcast.title.label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+      <Grid columns={4} padded centered>
+        {this.state.podcasts.map(podcast => {
+          return (
+            <Grid.Column width={4} key={podcast.id.attributes["im:id"]}>
+              <Podcast podcast={podcast} />
+            </Grid.Column>
+          );
+        })}
+      </Grid>
     );
   }
 }
