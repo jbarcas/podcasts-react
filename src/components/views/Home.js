@@ -2,6 +2,7 @@ import React from "react";
 import { Grid, Label, Segment } from "semantic-ui-react";
 import api from "../../api";
 import Podcast from "../podcasts/Podcast";
+import { isOutdated } from "../utils/Utils";
 import "../../css/podcasts.css";
 
 class Home extends React.Component {
@@ -16,15 +17,36 @@ class Home extends React.Component {
   }
 
   componentDidMount = () => {
-    api.podcasts.getAll().then(podcasts => {
-      this.setState({ podcasts: podcasts, filteredPodcasts: podcasts });
-      this.props.isLoading(false);
-    });
+    /**
+     * Si no existe el podcastsKey en localStorage o si está desactializado, hacer la petición de nuevo
+     * y actualizar el timestamp del objeto almacenado en el localStorage
+     */
+    let podcastsKey = "podcasts";
+    //console.log(JSON.parse(localStorage.getItem(podcastsKey)).timestamp);
+    if (localStorage.getItem(podcastsKey) === null || isOutdated(JSON.parse(localStorage.getItem(podcastsKey)).timestamp)) {
+      // Se hace la petición inicial (o se hace de nuevo si ya expiró)
+      api.podcasts.getAll().then(response => {
+        // Se actualiza el estado
+        this.setState({ podcasts: response, filteredPodcasts: response });
+        // Se añade/actualiza el objeto del localStorage
+        let lsObject = {value: response, timestamp: new Date().getTime()}
+        localStorage.setItem(podcastsKey, JSON.stringify(lsObject));
+      });
+    } else {
+      // Se obtiene la respuesta almacenada en el localStorage y se actualiza el estado
+      let lsPodcasts = JSON.parse(localStorage.getItem(podcastsKey)).value;
+      this.setState({ podcasts: lsPodcasts, filteredPodcasts: lsPodcasts });
+    }
+    // Se desactiva el spinner
+    this.props.isLoading(false);
   };
 
   onChange = e => {
     let updatedList = this.state.podcasts.filter(
-      podcast => podcast.title.label.toLowerCase().search(e.target.value.toLowerCase()) !== -1
+      podcast =>
+        podcast.title.label
+          .toLowerCase()
+          .search(e.target.value.toLowerCase()) !== -1
     );
     this.setState({ filter: e.target.value, filteredPodcasts: updatedList });
   };
