@@ -11,13 +11,13 @@ class DetailsPodcast extends React.Component {
     };
   }
 
-  componentDidMount = () => {};
-
   render() {
     return (
       <div>
-        <Segment><b>Episodes: </b></Segment>
-        <TableEpisodes />
+        <Segment>
+          <b>Episodes: {this.props.episodes.length}</b>
+        </Segment>
+        <TableEpisodes episodes={this.props.episodes} />
       </div>
     );
   }

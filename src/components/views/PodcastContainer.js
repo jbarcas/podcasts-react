@@ -11,16 +11,18 @@ class PodcastContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      podcast: {}
+      podcast: {},
+      episodes: []
     };
   }
 
   componentDidMount = () => {
-    api.podcasts
-      .getPodcast(this.props.match.params.podcastId)
-      .then(podcast => {
-        this.setState({ podcast })
-      });
+    api.podcasts.getPodcast(this.props.match.params.podcastId).then(podcast => {
+      this.setState({ podcast });
+      api.podcasts
+        .getEpisodes(podcast)
+        .then(episodes => this.setState({ episodes }));
+    });
     // Se desactiva el spinner
     this.props.isLoading(false);
   };
@@ -29,11 +31,26 @@ class PodcastContainer extends React.Component {
     return (
       <Grid>
         <Grid.Column width={4}>
-          <PodcastInfo podcast={this.state.podcast} description={this.props.location.state.podcast.summary.label}/>
+          <PodcastInfo
+            podcast={this.state.podcast}
+            description={this.props.location.state.podcast.summary.label}
+          />
         </Grid.Column>
         <Grid.Column width={12}>
-          <Route path={this.props.match.url} exact render={props => <DetailsPodcast isLoading={this.loading} />} />
-          <Route path={`${this.props.match.url}/episodes/:episodeId`} render={props => <DetailsEpisode isLoading={this.loading} />} />
+          <Route
+            path={this.props.match.url}
+            exact
+            render={props => (
+              <DetailsPodcast
+                isLoading={this.loading}
+                episodes={this.state.episodes}
+              />
+            )}
+          />
+          <Route
+            path={`${this.props.match.url}/episodes/:episodeId`}
+            render={props => <DetailsEpisode isLoading={this.loading} />}
+          />
         </Grid.Column>
       </Grid>
     );
