@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid, Label, Segment } from "semantic-ui-react";
 import api from "../../api";
-import Podcast from "../podcasts/Podcast";
+import Podcast from "../podcasts/PodcastItem";
 import { isOutdated } from "../utils/Utils";
 import "../../css/podcasts.css";
 

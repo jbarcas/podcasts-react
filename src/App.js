@@ -1,9 +1,8 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import Home from "./components/views/Home";
-import DetailsPodcast from "./components/views/DetailsPodcast";
-import DetailsEpisode from "./components/views/DetailsEpisode";
-import PageHeader from "./components/header/PageHeader";
+import PageHeader from "./components/header/Header";
+import PodcastContainer from "./components/views/PodcastContainer";
 
 class App extends React.Component {
   constructor(props) {
@@ -21,10 +20,9 @@ class App extends React.Component {
   render() {
     return (
       <div className="ui container">
-        <PageHeader isLoading={this.loading} loading={this.state.loading}/>
+        <PageHeader isLoading={this.loading} loading={this.state.loading} />
         <Route path="/" exact render={props => <Home isLoading={this.loading} />} />
-        <Route path="/podcast/:podcastId" exact render={props => <DetailsPodcast isLoading={this.loading} />}  />
-        <Route path="/podcast/:podcastId/episodes/:episodeId" render={props => <DetailsEpisode isLoading={this.loading} />} />
+        <Route path="/podcast/:podcastId" render={props => <PodcastContainer isLoading={this.loading} />} />
       </div>
     );
   }
