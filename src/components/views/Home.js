@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Label, Segment } from "semantic-ui-react";
+import { Grid, Label, Segment, Placeholder } from "semantic-ui-react";
 import api from "../../api";
 import Podcast from "../podcasts/PodcastItem";
 import { isOutdated } from "../utils/Utils";
@@ -25,13 +25,16 @@ class Home extends React.Component {
 
     const podcastsKey = "podcasts";
 
-    if (localStorage.getItem(podcastsKey) === null || isOutdated(JSON.parse(localStorage.getItem(podcastsKey)).timestamp)) {
+    if (
+      localStorage.getItem(podcastsKey) === null ||
+      isOutdated(JSON.parse(localStorage.getItem(podcastsKey)).timestamp)
+    ) {
       // Se hace la petición inicial (o se hace de nuevo si ya expiró)
       api.podcasts.getAll().then(response => {
         // Se actualiza el estado
         this.setState({ podcasts: response, filteredPodcasts: response });
         // Se añade/actualiza el objeto del localStorage
-        let lsObject = {value: response, timestamp: new Date().getTime()}
+        let lsObject = { value: response, timestamp: new Date().getTime() };
         localStorage.setItem(podcastsKey, JSON.stringify(lsObject));
         // Se desactiva el spinner
         this.props.isLoading(false);
@@ -43,7 +46,6 @@ class Home extends React.Component {
       // Se desactiva el spinner
       this.props.isLoading(false);
     }
-
   };
 
   onChange = e => {
@@ -79,7 +81,22 @@ class Home extends React.Component {
           {this.state.filteredPodcasts.map(podcast => {
             return (
               <Grid.Column width={4} key={podcast.id.attributes["im:id"]}>
-                <Podcast podcast={podcast} />
+                {this.state.loading ? (
+                  <Segment raised>
+                    <Placeholder>
+                      <Placeholder.Header image>
+                        <Placeholder.Line />
+                        <Placeholder.Line />
+                      </Placeholder.Header>
+                      <Placeholder.Paragraph>
+                        <Placeholder.Line length="medium" />
+                        <Placeholder.Line length="short" />
+                      </Placeholder.Paragraph>
+                    </Placeholder>
+                  </Segment>
+                ) : (
+                  <Podcast podcast={podcast} />
+                )}
               </Grid.Column>
             );
           })}

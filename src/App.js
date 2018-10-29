@@ -21,8 +21,8 @@ class App extends React.Component {
     return (
       <div className="ui container">
         <PageHeader isLoading={this.loading} loading={this.state.loading} />
-        <Route path="/" exact render={props => <Home isLoading={this.loading} />} />
-        <Route path="/podcast/:podcastId" render={props => <PodcastContainer isLoading={this.loading} />} />
+        <Route path="/" exact render={props => <Home loading={this.state.loading} isLoading={this.loading} />} />
+        <Route path="/podcast/:podcastId" render={props => <PodcastContainer loading={this.state.loading} isLoading={this.loading} />} />
       </div>
     );
   }

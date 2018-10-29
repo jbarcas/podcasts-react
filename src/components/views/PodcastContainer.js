@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid } from "semantic-ui-react";
+import { Grid, Placeholder } from "semantic-ui-react";
 import { Route } from "react-router-dom";
 import { withRouter } from "react-router";
 import { isOutdated } from "../utils/Utils";
@@ -28,25 +28,28 @@ class PodcastContainer extends React.Component {
 
     const podcastKey = `podcast${this.props.match.params.podcastId}`;
 
-    if (localStorage.getItem(podcastKey) === null || isOutdated(JSON.parse(localStorage.getItem(podcastKey)).timestamp)) {
-      api.podcasts.getPodcast(this.props.match.params.podcastId).then(podcast => {
-        api.podcasts
-          .getEpisodes(podcast)
-          .then(episodes => {
+    if (
+      localStorage.getItem(podcastKey) === null ||
+      isOutdated(JSON.parse(localStorage.getItem(podcastKey)).timestamp)
+    ) {
+      api.podcasts
+        .getPodcast(this.props.match.params.podcastId)
+        .then(podcast => {
+          api.podcasts.getEpisodes(podcast).then(episodes => {
             podcast.episodes = episodes;
             podcast.description = this.props.location.state.podcast.summary.label;
-            this.setState({ podcast })
+            this.setState({ podcast });
             // Se añade/actualiza el objeto del localStorage
-            let lsObject = {value: podcast, timestamp: new Date().getTime()};
+            let lsObject = { value: podcast, timestamp: new Date().getTime() };
             localStorage.setItem(podcastKey, JSON.stringify(lsObject));
             // Se desactiva el spinner
             this.props.isLoading(false);
           });
-      });
+        });
     } else {
       // Se obtiene la respuesta almacenada en el localStorage y se actualiza el estado
       let lsPodcast = JSON.parse(localStorage.getItem(podcastKey)).value;
-      this.setState({ podcast: lsPodcast});
+      this.setState({ podcast: lsPodcast });
       // Se desactiva el spinner
       this.props.isLoading(false);
     }
@@ -56,9 +59,13 @@ class PodcastContainer extends React.Component {
     return (
       <Grid>
         <Grid.Column width={4}>
-          <PodcastInfo
-            podcast={this.state.podcast}
-          />
+          {this.props.loading ? (
+            <Placeholder>
+              <Placeholder.Image square />
+            </Placeholder>
+          ) : (
+            <PodcastInfo podcast={this.state.podcast} />
+          )}
         </Grid.Column>
         <Grid.Column width={12}>
           <Route
@@ -67,6 +74,7 @@ class PodcastContainer extends React.Component {
             render={props => (
               <DetailsPodcast
                 isLoading={this.loading}
+                loading={this.props.loading}
                 podcast={this.state.podcast}
               />
             )}

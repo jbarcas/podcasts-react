@@ -1,5 +1,5 @@
 import React from "react";
-import { Segment } from "semantic-ui-react";
+import { Segment, Placeholder } from "semantic-ui-react";
 import TableEpisodes from "./TableEpisodes";
 
 class DetailsPodcast extends React.PureComponent {
@@ -7,9 +7,27 @@ class DetailsPodcast extends React.PureComponent {
     return (
       <div>
         <Segment>
-          <b>Episodes: {this.props.podcast.episodes.length}</b>
+          {this.props.loading ? (
+            <Placeholder>
+              <Placeholder.Header>
+                <Placeholder.Line />
+                <Placeholder.Line />
+              </Placeholder.Header>
+            </Placeholder>
+          ) : (
+            <b>Episodes: {this.props.podcast.episodes.length}</b>
+          )}
         </Segment>
-        <TableEpisodes episodes={this.props.podcast.episodes} />
+        {this.props.loading ? (
+          <Placeholder>
+            <Placeholder.Line length="full" />
+            <Placeholder.Line length="full" />
+            <Placeholder.Line length="full" />
+            <Placeholder.Line length="full" />
+          </Placeholder>
+        ) : (
+          <TableEpisodes episodes={this.props.podcast.episodes} />
+        )}
       </div>
     );
   }

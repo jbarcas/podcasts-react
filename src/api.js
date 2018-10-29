@@ -22,7 +22,9 @@ export default {
           id: episode.guid,
           title: episode.title,
           date: episode.pubDate,
-          duration: episode.itunes.duration
+          duration: episode.itunes.duration,
+          content: episode.content,
+          url: episode.enclosure.url
         });
       });
       return episodes;
