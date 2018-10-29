@@ -19,6 +19,7 @@ export default {
       const feed = await parser.parseURL(`https://cors.io/?${podcast.feedUrl}`);
       feed.items.forEach(episode => {
         episodes.push({
+          id: episode.guid,
           title: episode.title,
           date: episode.pubDate,
           duration: episode.itunes.duration

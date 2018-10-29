@@ -18,11 +18,13 @@ class Home extends React.Component {
 
   componentDidMount = () => {
     /**
-     * Si no existe el podcastsKey en localStorage o si está desactializado, hacer la petición de nuevo
-     * y actualizar el timestamp del objeto almacenado en el localStorage
+     * Si no existe el podcastsKey en localStorage o si está desactializado, se hace la petición de nuevo
+     * y se actualiza el timestamp del objeto almacenado en el localStorage
      */
-    let podcastsKey = "podcasts";
-    //console.log(JSON.parse(localStorage.getItem(podcastsKey)).timestamp);
+    this.props.isLoading(true);
+
+    const podcastsKey = "podcasts";
+
     if (localStorage.getItem(podcastsKey) === null || isOutdated(JSON.parse(localStorage.getItem(podcastsKey)).timestamp)) {
       // Se hace la petición inicial (o se hace de nuevo si ya expiró)
       api.podcasts.getAll().then(response => {
@@ -31,14 +33,17 @@ class Home extends React.Component {
         // Se añade/actualiza el objeto del localStorage
         let lsObject = {value: response, timestamp: new Date().getTime()}
         localStorage.setItem(podcastsKey, JSON.stringify(lsObject));
+        // Se desactiva el spinner
+        this.props.isLoading(false);
       });
     } else {
       // Se obtiene la respuesta almacenada en el localStorage y se actualiza el estado
       let lsPodcasts = JSON.parse(localStorage.getItem(podcastsKey)).value;
       this.setState({ podcasts: lsPodcasts, filteredPodcasts: lsPodcasts });
+      // Se desactiva el spinner
+      this.props.isLoading(false);
     }
-    // Se desactiva el spinner
-    this.props.isLoading(false);
+
   };
 
   onChange = e => {

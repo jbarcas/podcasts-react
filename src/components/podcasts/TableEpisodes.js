@@ -1,5 +1,7 @@
 import React from "react";
-import { Icon, Menu, Table } from "semantic-ui-react";
+import { Link } from "react-router-dom";
+import { withRouter } from "react-router";
+import { Table } from "semantic-ui-react";
 
 const dateParser = dateString => {
   let milliseconds = Date.parse(dateString);
@@ -10,13 +12,7 @@ const dateParser = dateString => {
   );
 };
 
-class TableEpisodes extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      episodes: []
-    };
-  }
+class TableEpisodes extends React.PureComponent {
 
   render() {
     return (
@@ -33,7 +29,12 @@ class TableEpisodes extends React.Component {
           {this.props.episodes.map((episode, index) => {
             return (
               <Table.Row key={index}>
-                <Table.Cell>{episode.title}</Table.Cell>
+                <Table.Cell><Link to={{
+                    pathname: `${this.props.match.url}/episodes/${episode.id}`,
+                    state: {
+                      episode: episode
+                    }
+                  }}>{episode.title}</Link></Table.Cell>
                 <Table.Cell>{dateParser(episode.date)}</Table.Cell>
                 <Table.Cell>{episode.duration}</Table.Cell>
               </Table.Row>
@@ -45,4 +46,4 @@ class TableEpisodes extends React.Component {
   }
 }
 
-export default TableEpisodes;
+export default withRouter(TableEpisodes);

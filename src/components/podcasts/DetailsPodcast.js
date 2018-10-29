@@ -1,26 +1,18 @@
 import React from "react";
 import { Segment } from "semantic-ui-react";
-import { withRouter } from "react-router";
 import TableEpisodes from "./TableEpisodes";
 
-class DetailsPodcast extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      podcast: {}
-    };
-  }
-
+class DetailsPodcast extends React.PureComponent {
   render() {
     return (
       <div>
         <Segment>
-          <b>Episodes: {this.props.episodes.length}</b>
+          <b>Episodes: {this.props.podcast.episodes.length}</b>
         </Segment>
-        <TableEpisodes episodes={this.props.episodes} />
+        <TableEpisodes episodes={this.props.podcast.episodes} />
       </div>
     );
   }
 }
 
-export default withRouter(DetailsPodcast);
+export default DetailsPodcast;

@@ -8,7 +8,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true
+      loading: false
     };
     this.loading = this.loading.bind(this);
   }
