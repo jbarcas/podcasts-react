@@ -10,9 +10,9 @@ const Description = props => (
 );
 
 const PodcastDetails = props => (
-  <Link to={`/podcast/${props.podcast.trackId}`}>
+  <Link to={`/podcast/${props.podcast.id}`}>
     <Card
-      image={props.podcast.artworkUrl600}
+      image={props.podcast.artwork}
       header={props.podcast.trackName}
       meta={"by " + props.podcast.artistName}
       extra={<Description description={props.podcast.description} />}

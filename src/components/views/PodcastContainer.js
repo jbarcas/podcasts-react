@@ -8,7 +8,7 @@ import DetailsPodcast from "../podcasts/DetailsPodcast";
 import DetailsEpisode from "../podcasts/DetailsEpisode";
 import api from "../../api";
 
-class PodcastContainer extends React.Component {
+class PodcastContainer extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -37,11 +37,16 @@ class PodcastContainer extends React.Component {
         .then(podcast => {
           api.podcasts.getEpisodes(podcast).then(episodes => {
             podcast.episodes = episodes;
-            podcast.description = this.props.location.state.podcast.summary.label;
+            podcast.description = this.props.location.state.podcast.summary;
             this.setState({ podcast });
             // Se añade/actualiza el objeto del localStorage
             let lsObject = { value: podcast, timestamp: new Date().getTime() };
-            localStorage.setItem(podcastKey, JSON.stringify(lsObject));
+            try {
+              localStorage.setItem(podcastKey, JSON.stringify(lsObject));
+            } catch (e) {
+              console.log("Local Storage is full, Please empty data");
+            }
+
             // Se desactiva el spinner
             this.props.isLoading(false);
           });

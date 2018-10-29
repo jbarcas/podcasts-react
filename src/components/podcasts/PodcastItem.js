@@ -4,17 +4,17 @@ import { Card, Image } from "semantic-ui-react";
 
 const Podcast = props => (
   <Link to={{
-      pathname: `/podcast/${props.podcast.id.attributes["im:id"]}`,
+      pathname: `/podcast/${props.podcast.id}`,
       state: {
-        podcast: props.podcast        
+        podcast: props.podcast
       }
     }}>
     <Card>
-      <Image src={props.podcast["im:image"][2].label} />
+      <Image src={props.podcast.img} />
       <Card.Content>
-        <Card.Header>{props.podcast["im:name"].label}</Card.Header>
+        <Card.Header>{props.podcast.name}</Card.Header>
         <Card.Meta>
-          <span>Author: {props.podcast["im:artist"].label}</span>
+          <span>Author: {props.podcast.author}</span>
         </Card.Meta>
       </Card.Content>
     </Card>

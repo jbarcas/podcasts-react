@@ -35,7 +35,12 @@ class Home extends React.Component {
         this.setState({ podcasts: response, filteredPodcasts: response });
         // Se añade/actualiza el objeto del localStorage
         let lsObject = { value: response, timestamp: new Date().getTime() };
-        localStorage.setItem(podcastsKey, JSON.stringify(lsObject));
+        try {
+          localStorage.setItem(podcastsKey, JSON.stringify(lsObject));
+        } catch (e) {
+          console.log("Local Storage is full, Please empty data");
+        }
+
         // Se desactiva el spinner
         this.props.isLoading(false);
       });
@@ -51,9 +56,9 @@ class Home extends React.Component {
   onChange = e => {
     let updatedList = this.state.podcasts.filter(
       podcast =>
-        podcast.title.label
-          .toLowerCase()
-          .search(e.target.value.toLowerCase()) !== -1
+        podcast.author.toLowerCase().search(e.target.value.toLowerCase()) !==
+          -1 ||
+        podcast.name.toLowerCase().search(e.target.value.toLowerCase()) !== -1
     );
     this.setState({ filter: e.target.value, filteredPodcasts: updatedList });
   };
@@ -80,7 +85,7 @@ class Home extends React.Component {
         <Grid columns={4} padded centered>
           {this.state.filteredPodcasts.map(podcast => {
             return (
-              <Grid.Column width={4} key={podcast.id.attributes["im:id"]}>
+              <Grid.Column width={4} key={podcast.id}>
                 {this.state.loading ? (
                   <Segment raised>
                     <Placeholder>
