@@ -13,16 +13,28 @@ class App extends React.Component {
     this.loading = this.loading.bind(this);
   }
 
-  loading(isLoading) {
-    this.setState({ loading: isLoading });
-  }
+  loading = isLoading => this.setState({loading: isLoading});
 
   render() {
     return (
       <div className="ui container">
         <PageHeader loading={this.state.loading} />
-        <Route path="/" exact render={props => <Home loading={this.state.loading} isLoading={this.loading} />} />
-        <Route path="/podcast/:podcastId" render={props => <PodcastContainer loading={this.state.loading} isLoading={this.loading} />} />
+        <Route
+          path="/"
+          exact
+          render={() => (
+            <Home loading={this.state.loading} isLoading={this.loading} />
+          )}
+        />
+        <Route
+          path="/podcast/:podcastId"
+          render={() => (
+            <PodcastContainer
+              loading={this.state.loading}
+              isLoading={this.loading}
+            />
+          )}
+        />
       </div>
     );
   }

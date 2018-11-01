@@ -11,7 +11,8 @@ class Home extends React.Component {
     this.state = {
       podcasts: [],
       filteredPodcasts: [],
-      filter: ""
+      filter: "",
+      error: false
     };
     this.onChange = this.onChange.bind(this);
   }
@@ -30,15 +31,23 @@ class Home extends React.Component {
       isOutdated(JSON.parse(localStorage.getItem(podcastsKey)).timestamp)
     ) {
       // Se hace la petición inicial (o se hace de nuevo si ya expiró)
-      api.podcasts.getAll().then(response => {
+      api.podcasts.getAll().then(podcasts => {
+        // Si no hay podcasts
+        if (!podcasts) {
+          console.error("Podcasts not found.");
+          this.setState({ error: true });
+          // Se desactiva el spinner
+          this.props.isLoading(false);
+          return;
+        }
         // Se actualiza el estado
-        this.setState({ podcasts: response, filteredPodcasts: response });
+        this.setState({ podcasts: podcasts, filteredPodcasts: podcasts });
         // Se añade/actualiza el objeto del localStorage
-        let lsObject = { value: response, timestamp: new Date().getTime() };
+        let lsObject = { value: podcasts, timestamp: new Date().getTime() };
         try {
           localStorage.setItem(podcastsKey, JSON.stringify(lsObject));
         } catch (e) {
-          console.log("Local Storage is full, Please empty data");
+          console.log("Local Storage is full, please empty data: " + e);
         }
 
         // Se desactiva el spinner
@@ -64,29 +73,34 @@ class Home extends React.Component {
   };
 
   render() {
+    if (this.state.error) {
+      return <h2>Something went wrong, check the console</h2>;
+    }
     return (
       <div>
-        <Segment textAlign="right" className="podcast-no-border">
-          <Label color="blue" size="large">
-            {this.state.filteredPodcasts.length}
-          </Label>
-          <div className="ui icon focus input">
-            <i className="search icon" />
-            <input
-              type="text"
-              placeholder="Filter podcasts..."
-              name="filter"
-              onChange={this.onChange}
-              value={this.state.filter}
-            />
-          </div>
-        </Segment>
+        {!this.props.loading && (
+          <Segment textAlign="right" className="podcast-no-border">
+            <Label color="blue" size="large">
+              {this.state.filteredPodcasts.length}
+            </Label>
+            <div className="ui icon focus input">
+              <i className="search icon" />
+              <input
+                type="text"
+                placeholder="Filter podcasts..."
+                name="filter"
+                onChange={this.onChange}
+                value={this.state.filter}
+              />
+            </div>
+          </Segment>
+        )}
 
         <Grid columns={4} padded centered>
           {this.state.filteredPodcasts.map(podcast => {
             return (
               <Grid.Column width={4} key={podcast.id}>
-                {this.state.loading ? (
+                {this.props.loading ? (
                   <Segment raised>
                     <Placeholder>
                       <Placeholder.Header image>

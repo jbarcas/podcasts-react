@@ -2,6 +2,8 @@ import axios from "axios";
 import Parser from "rss-parser";
 
 const CORS_PROXY = "https://cors.io/?";
+// const CORS_PROXY = "https://crossorigin.me/";
+// const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
 
 export default {
   podcasts: {

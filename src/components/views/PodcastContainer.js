@@ -8,13 +8,14 @@ import DetailsPodcast from "../podcasts/DetailsPodcast";
 import DetailsEpisode from "../podcasts/DetailsEpisode";
 import api from "../../api";
 
-class PodcastContainer extends React.PureComponent {
+class PodcastContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       podcast: {
         episodes: []
-      }
+      },
+      error: false
     };
   }
 
@@ -23,7 +24,6 @@ class PodcastContainer extends React.PureComponent {
      * Si no existe el podcastKey en localStorage o si está desactializado, se hace la petición de nuevo
      * y se actualiza el timestamp del objeto almacenado en el localStorage
      */
-
     this.props.isLoading(true);
 
     const podcastKey = `podcast${this.props.match.params.podcastId}`;
@@ -35,7 +35,21 @@ class PodcastContainer extends React.PureComponent {
       api.podcasts
         .getPodcast(this.props.match.params.podcastId)
         .then(podcast => {
+          if (!podcast) {
+            console.error("Podcast not found.");
+            this.setState({ error: true });
+            // Se desactiva el spinner
+            this.props.isLoading(false);
+            return;
+          }
           api.podcasts.getEpisodes(podcast).then(episodes => {
+            if (!episodes) {
+              console.error("Episodes not found.");
+              this.setState({ error: true });
+              // Se desactiva el spinner
+              this.props.isLoading(false);
+              return;
+            }
             podcast.episodes = episodes;
             podcast.description = this.props.location.state.podcast.summary;
             this.setState({ podcast });
@@ -44,7 +58,7 @@ class PodcastContainer extends React.PureComponent {
             try {
               localStorage.setItem(podcastKey, JSON.stringify(lsObject));
             } catch (e) {
-              console.log("Local Storage is full, Please empty data");
+              console.log("Local Storage is full, please empty data: " + e);
             }
 
             // Se desactiva el spinner
@@ -61,6 +75,9 @@ class PodcastContainer extends React.PureComponent {
   };
 
   render() {
+    if (this.state.error) {
+      return <h2>Something went wrong, check the console</h2>;
+    }
     return (
       <Grid>
         <Grid.Column width={4}>
@@ -76,17 +93,13 @@ class PodcastContainer extends React.PureComponent {
           <Route
             path={this.props.match.url}
             exact
-            render={props => (
-              <DetailsPodcast
-                isLoading={this.loading}
-                loading={this.props.loading}
-                podcast={this.state.podcast}
-              />
+            render={() => (
+              <DetailsPodcast {...this.props} podcast={this.state.podcast} />
             )}
           />
           <Route
             path={`${this.props.match.url}/episodes/:episodeId`}
-            render={props => <DetailsEpisode isLoading={this.loading} />}
+            component={DetailsEpisode}
           />
         </Grid.Column>
       </Grid>

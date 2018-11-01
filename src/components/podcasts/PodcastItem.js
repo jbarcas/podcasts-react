@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import { Card, Image } from "semantic-ui-react";
 
 const Podcast = props => (
-  <Link to={{
+  <Link
+    to={{
       pathname: `/podcast/${props.podcast.id}`,
       state: {
         podcast: props.podcast
       }
-    }}>
+    }}
+  >
     <Card>
       <Image src={props.podcast.img} />
       <Card.Content>
